@@ -19,6 +19,24 @@ const Header: FC<iHeaderProps> = () => {
       async () => {
         const { start, end, numberOfDays } = await snapshot.getPromise(rangeDetails);
 
+        set(rangeState, {
+          start: dayjs(start)
+            .add(numberOfDays * change, 'day')
+            .toDate(),
+          end: dayjs(end)
+            .add(numberOfDays * change, 'day')
+            .toDate(),
+          type: 'week',
+        });
+      },
+    [],
+  );
+  const _handleRange = useRecoilCallback(
+    ({ snapshot, set }) =>
+      (change: number) =>
+      async () => {
+        const { start, end, numberOfDays } = await snapshot.getPromise(rangeDetails);
+
         const _numberOfDays = Math.max(1, Math.min(9, numberOfDays + change));
 
         set(rangeState, { start, end: dayjs(start).add(_numberOfDays, 'day').toDate(), type: 'week' });
@@ -27,13 +45,15 @@ const Header: FC<iHeaderProps> = () => {
   );
   return (
     <Wrapper>
-      <Button disabled={numberOfDays < 2} onClick={_handleChange(-1)}>
+      <Button disabled={numberOfDays < 2} onClick={_handleRange(-1)}>
         -
       </Button>
       <Button disabled>{numberOfDays}</Button>
-      <Button disabled={numberOfDays > 8} onClick={_handleChange(1)}>
+      <Button disabled={numberOfDays > 8} onClick={_handleRange(1)}>
         +
       </Button>
+      <Button onClick={_handleChange(-1)}>⬅️</Button>
+      <Button onClick={_handleChange(1)}>➡️</Button>
     </Wrapper>
   );
 };

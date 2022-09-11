@@ -1,7 +1,8 @@
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 import { zoomState } from '../../recoil/atoms/calendar';
+import { iCalendarEvent } from '../../types/event';
 
 const Wrapper = styled.div<{ topOffset: number; length: number }>`
   position: absolute;
@@ -19,16 +20,24 @@ const Content = styled.div`
   border-radius: 5px;
 `;
 
-interface iCalendarEventProps {
-  start: number;
-  end: number;
-}
+const Title = styled.span``;
 
-const CalendarEvent: FC<iCalendarEventProps> = ({ start, end }) => {
+interface iCalendarEventProps extends iCalendarEvent {}
+
+const CalendarEvent: FC<iCalendarEventProps> = ({ start, end, title }) => {
+  const startRelative = useMemo(() => {
+    return start.hour + start.minute / 60;
+  }, [start]);
+  const length = useMemo(() => {
+    return end.hour + end.minute / 60 - startRelative;
+  }, [end, startRelative]);
+
   const zoom = useRecoilValue(zoomState);
   return (
-    <Wrapper topOffset={start * zoom} length={(end - start) * zoom}>
-      <Content></Content>
+    <Wrapper topOffset={startRelative * zoom} length={length * zoom}>
+      <Content>
+        <Title>{title}</Title>
+      </Content>
     </Wrapper>
   );
 };

@@ -18,8 +18,8 @@ export const timeState = atom({
 export const rangeState = atom({
   key: 'calendar-range',
   default: {
-    start: dayjs().startOf('day').toDate(),
-    end: dayjs().startOf('day').add(7, 'days').toDate(),
+    start: dayjs().startOf('day').subtract(5, 'day').day(1).toDate(),
+    end: dayjs().startOf('day').subtract(5, 'day').day(8).toDate(),
     type: 'week',
   },
 });

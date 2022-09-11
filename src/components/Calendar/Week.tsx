@@ -2,6 +2,7 @@ import dayjs from 'dayjs';
 import { FC, useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
+import { dummyEvents } from '../../core/dummy';
 import { rangeState } from '../../recoil/atoms/calendar';
 import { rangeDetails } from '../../recoil/selectors/calendar';
 import Day from './Day';
@@ -53,8 +54,16 @@ const Week: FC<iWeekProps> = () => {
       </Header>
       <Content>
         <Hours />
-        {days.map(({ day, date, iso }) => {
-          return <Day key={`day-${iso}`}></Day>;
+        {days.map(({ day, date, year, month, iso }) => {
+          return (
+            <Day key={`day-${iso}`}>
+              {dummyEvents
+                .filter((e) => e.date === date && e.year === year && e.month === month)
+                .map((event) => (
+                  <CalendarEvent {...event} key={event.id} />
+                ))}
+            </Day>
+          );
         })}
       </Content>
     </Wrapper>
