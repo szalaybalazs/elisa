@@ -1,16 +1,9 @@
-import { FC } from 'react';
+import { FC, ReactNode } from 'react';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 import { msPerDay } from '../../core/time';
 import { timeState, zoomState } from '../../recoil/atoms/calendar';
 import Hour from './Hour';
-
-const Wrapper = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-`;
 
 const Content = styled.div<{ zoom: number }>`
   height: ${(props) => props.zoom * 24}px;
@@ -39,24 +32,11 @@ const Marker = styled.div<{ markerPosition: number }>`
   transform: translateY(-50%);
 `;
 
-const DayLabel = styled.span`
-  display: block;
-`;
-
-const DateLabel = styled.span`
-  display: block;
-`;
-
-const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
 interface iDayProps {
-  day: number;
-  date: number;
-  month: number;
-  year: number;
+  children?: ReactNode;
 }
 
-const Day: FC<iDayProps> = ({ day, date, month, year }) => {
+const Day: FC<iDayProps> = ({ children }) => {
   const zoom = useRecoilValue(zoomState);
   const timeOfDay = useRecoilValue(timeState);
 
@@ -66,6 +46,7 @@ const Day: FC<iDayProps> = ({ day, date, month, year }) => {
       {[...new Array(24)].map((hour) => (
         <Hour />
       ))}
+      {children}
     </Content>
   );
 };
